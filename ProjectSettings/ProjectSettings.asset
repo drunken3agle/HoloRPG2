@@ -558,7 +558,7 @@ PlayerSettings:
     14: CROSS_PLATFORM_INPUT;MOBILE_INPUT;VUFORIA_WSA_SETTINGS
   platformArchitecture: {}
   scriptingBackend:
-    Metro: 1
+    Metro: 2
   il2cppCompilerConfiguration: {}
   incrementalIl2cppBuild: {}
   allowUnsafeCode: 0
@@ -568,7 +568,7 @@ PlayerSettings:
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
   metroPackageName: HoloRPG
-  metroPackageVersion: 1.0.0.0
+  metroPackageVersion: 1.0.1.0
   metroCertificatePath: Assets\WSATestCertificate.pfx
   metroCertificatePassword: 
   metroCertificateSubject: DefaultCompany

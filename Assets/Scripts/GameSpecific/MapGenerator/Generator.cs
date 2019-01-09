@@ -41,12 +41,25 @@ public class Generator : MonoBehaviour {
 			if (regions[currentRegion].NPC != null){
 				SpawnNPC();
 			}
+		} else { // Stay in current region
+			if (regions[currentRegion].enemies.Count > 0 && SpawnThisFrame()){
+				SpawnEnemy();
+			}
 		}
 	}
 
 	private void SpawnNPC(){
 		// TODO implement
 	}	
+
+	private void SpawnEnemy(){
+		// TODO implement		
+	}
+
+	private bool SpawnThisFrame(){
+		// TODO implement
+		return false;
+	}
 
 	private float AccumulatedDistance(){
 		float overallDistance = 0.0f;
@@ -65,7 +78,7 @@ public class Generator : MonoBehaviour {
 /*
 	Defines a single game region
  */
-public struct GameRegion{
+public struct GameRegion {
 	public float length;
 	public List<GameObject> enemies;
 	public float spawnRate;

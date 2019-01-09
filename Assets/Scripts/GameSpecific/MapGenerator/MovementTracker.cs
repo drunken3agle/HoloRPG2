@@ -7,7 +7,7 @@ public class MovementTracker : MonoBehaviour {
 	private Vector3 lastPosition = Vector3.zero;
 	private float distanceMoved = 0.0f;
 
-	[SerializeField] private float movementThreshold;
+	[SerializeField] private float movementThreshold = 0.2f;
 
 	void Update() {
 		float distanceSinceLastFrame = Vector3.Distance(lastPosition, transform.position);
