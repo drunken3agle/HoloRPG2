@@ -430,6 +430,7 @@ GameObject:
   - component: {fileID: 1123715208}
   - component: {fileID: 1123715207}
   - component: {fileID: 1123715206}
+  - component: {fileID: 1123715211}
   - component: {fileID: 1123715210}
   m_Layer: 5
   m_Name: Canvas
@@ -522,10 +523,26 @@ MonoBehaviour:
   m_GameObject: {fileID: 1123715205}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f3d84e072334c6429bcc3b8a5690fba, type: 3}
+  m_Script: {fileID: 11500000, guid: 5ac47e7066e82cb4db8e5c153300ec01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetDistance: 100
+  targetTransform: {fileID: 885295254}
+  pivotAxis: 0
+  rotationSpeed: 1
+--- !u!114 &1123715211
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1123715205}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a3937c1d847c354782d067ad8c849d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  anchor: {fileID: 885295254}
+  speed: 1
+  fixRotation: 0
 --- !u!1 &1235509719
 GameObject:
   m_ObjectHideFlags: 0
