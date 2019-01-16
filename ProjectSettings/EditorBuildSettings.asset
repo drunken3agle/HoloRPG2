@@ -11,7 +11,10 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/Main - Edit Mode.unity
     guid: a5467be1313ce0e4d8205912cabe46b7
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Playgrounds/LevelGeneration.unity
     guid: 55343eb15bb2e5146b977a18a0443de2
+  - enabled: 1
+    path: Assets/HoloToolkit-Examples/SpatialUnderstanding/Scenes/SpatialUnderstandingExample.unity
+    guid: 7ecf1c34f0ac4b4449076e91efc011be
   m_configObjects: {}

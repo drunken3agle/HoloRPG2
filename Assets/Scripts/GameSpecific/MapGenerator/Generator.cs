@@ -27,25 +27,22 @@ public class Generator : MonoBehaviour {
 			Debug.Log("Generator: No regions defined");
 		}
 
-		tracker = GetComponent<MovementTracker>();
-		if(tracker == null){
-			Debug.Log("Generator: No tracking component available");
-		}
+		tracker = GetComponent<MovementTracker>(); // RequireComp() for MovementTracker
 	}
 
 	void Update () {
-		if (DistanceToNextRegion() < 0.0f && enemies.Count == 0) { // Advance to next region
-			tracker.SetDistanceMoved(AccumulatedDistance());
-			currentRegion++;
+		// if (DistanceToNextRegion() < 0.0f && enemies.Count == 0) { // Advance to next region
+		// 	tracker.SetDistanceMoved(AccumulatedDistance());
+		// 	currentRegion++;
 
-			if (regions[currentRegion].NPC != null){
-				SpawnNPC();
-			}
-		} else { // Stay in current region
-			if (regions[currentRegion].enemies.Count > 0 && SpawnThisFrame()){
-				SpawnEnemy();
-			}
-		}
+		// 	if (regions[currentRegion].NPC != null){
+		// 		SpawnNPC();
+		// 	}
+		// } else { // Stay in current region
+		// 	if (regions[currentRegion].enemies.Count > 0 && SpawnThisFrame()){
+		// 		SpawnEnemy();
+		// 	}
+		// }
 	}
 
 	private void SpawnNPC(){
