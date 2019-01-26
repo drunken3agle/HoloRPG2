@@ -83,6 +83,7 @@ public class ScanningManager : MonoBehaviour, IInputClickHandler {
     public void OnInputClicked(InputClickedEventData eventData)
     {
         InstructionTextMesh.text = "Requested Finish Scan";
+        Debug.Log("Clicked!");
 
         SpatialUnderstanding.Instance.RequestFinishScan();
     }
