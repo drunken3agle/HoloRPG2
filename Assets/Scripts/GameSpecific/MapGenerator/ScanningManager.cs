@@ -71,5 +71,5 @@ public class ScanningManager : MonoBehaviour {
         } else {
             Debug.Log("No suitable spawn position!");
         }
-}
+    }
 }
