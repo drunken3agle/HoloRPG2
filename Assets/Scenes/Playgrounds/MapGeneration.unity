@@ -2049,8 +2049,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2219f8a16c4249342b41b72271680ed8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  TutorialNPC: {fileID: 1004531890468314, guid: f6b1baf622c612c40b32f7a868da334e,
+    type: 2}
   Enemies:
-  - {fileID: 100086, guid: 878bd04a6175b8b4dacf054c75f103b2, type: 2}
+  - {fileID: 1243858668362724, guid: 33e395040d67d1c4abd0ee2ae95cac71, type: 2}
   MaxResultCount: 32
   ToDisable:
   - {fileID: 871455718}

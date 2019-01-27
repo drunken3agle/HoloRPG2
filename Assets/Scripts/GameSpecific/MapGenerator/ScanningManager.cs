@@ -8,6 +8,9 @@ using UnityEngine;
 /* Adapted from https://medium.com/southworks/how-to-use-spatial-understanding-to-query-your-room-with-hololens-4a6192831a6f */
 public class ScanningManager : MonoBehaviour {
 
+    [Tooltip("Tutorial NPC"), SerializeField]
+    private GameObject TutorialNPC;
+
     [Tooltip("List of spawnable enemies. Sort by level!") , SerializeField]
     private GameObject[] Enemies;
 
