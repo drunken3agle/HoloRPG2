@@ -3,6 +3,7 @@ using HoloToolkit.Unity;
 using HoloToolkit.Unity.InputModule;
 using UnityEngine;
 
+// Set SpatialUnderstandingSurface Base+Wire color to black for transparent rendering
 
 /* Adapted from https://medium.com/southworks/how-to-use-spatial-understanding-to-query-your-room-with-hololens-4a6192831a6f */
 public class ScanningManager : MonoBehaviour {
@@ -39,7 +40,7 @@ public class ScanningManager : MonoBehaviour {
                 g.SetActive(false);
             }
 
-            // Set Managers -> SpatialUnderstanding -> SUCM.MeshMaterial to None (prev. SpatialUnderstandingSurface)
+            InstantiateObjectOnFloor();
         }
     }
 
@@ -67,6 +68,8 @@ public class ScanningManager : MonoBehaviour {
         if (locationCount > 0)
         {
             Instantiate(Enemies[CurrentLevel], _resultsTopology[0].position, Quaternion.LookRotation(_resultsTopology[0].normal, Vector3.up));
+        } else {
+            Debug.Log("No suitable spawn position!");
         }
 }
 }
