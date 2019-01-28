@@ -65,8 +65,7 @@ public class ScanningManager : Singleton<ScanningManager> {
         var locationCount = SpatialUnderstandingDllTopology.QueryTopology_FindPositionsOnFloor(minLengthFloorSpace, minWidthFloorSpace, 
                                                                                                _resultsTopology.Length, resultsTopologyPtr);
 
-        if (locationCount > 0)
-        {
+        if (locationCount > 0) {
             Instantiate(Enemies[CurrentLevel], _resultsTopology[0].position, Quaternion.LookRotation(_resultsTopology[0].normal, Vector3.up));
         } else {
             Debug.Log("No suitable spawn position!");
@@ -101,7 +100,9 @@ public class ScanningManager : Singleton<ScanningManager> {
                 break;
             } 
             
-            if (!successful) { Debug.Log("Unable to spawn GameObject: No suitable location"); }
+            if (!successful) { 
+                Debug.Log("Unable to spawn GameObject: No suitable location"); 
+            }
         } else {
             Debug.Log("Unable to spawn GameObject: No locations found");
         }
