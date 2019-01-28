@@ -1,7 +1,9 @@
 ﻿using System;
 using HoloToolkit.Unity;
+using HoloToolkit.Unity.SpatialMapping;
 using HoloToolkit.Unity.InputModule;
 using UnityEngine;
+using UnityEngine.XR.WSA.Input;
 
 // Set SpatialUnderstandingSurface Base+Wire color to black for transparent rendering
 
@@ -22,7 +24,7 @@ public class ScanningManager : Singleton<ScanningManager> {
     [Tooltip("GameObjects to disable when scanning has finsihed!"), SerializeField]
     private GameObject[] ToDisable;
 
-   void Start() {
+    void Start() {
         SpatialUnderstanding.Instance.ScanStateChanged += ScanStateChanged;
     }
 
@@ -40,6 +42,10 @@ public class ScanningManager : Singleton<ScanningManager> {
                 Debug.Log("ScanningManager: Disabled " + g.name);
                 g.SetActive(false);
             }
+
+            // Disable mesh rendering
+            SpatialUnderstanding.Instance.UnderstandingCustomMesh.DrawProcessedMesh = false;
+            SpatialMappingManager.Instance.DrawVisualMeshes = false;
 
             InstantiateObjectOnFloor();
         }

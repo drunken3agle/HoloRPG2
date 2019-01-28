@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.XR.WSA.Input;
 
 #if UNITY_WSA || UNITY_STANDALONE_WIN
 using UnityEngine.Windows.Speech;
@@ -202,7 +203,7 @@ namespace HoloToolkit.Examples.SpatialUnderstandingFeatureOverview
         private void Start()
         {
             // Default the scene & the HoloToolkit objects to the camera
-            Vector3 sceneOrigin = CameraCache.Main.transform.position;
+            Vector3 sceneOrigin = Camera.main.transform.position;
             Parent_Scene.transform.position = sceneOrigin;
             MappingObserver.SetObserverOrigin(sceneOrigin);
             InputManager.Instance.AddGlobalListener(gameObject);
@@ -217,6 +218,9 @@ namespace HoloToolkit.Examples.SpatialUnderstandingFeatureOverview
             keywordRecognizer = new KeywordRecognizer(keywordsToActions.Keys.ToArray());
             keywordRecognizer.OnPhraseRecognized += args => keywordsToActions[args.text].Invoke();
             keywordRecognizer.Start();
+
+            // Should unsubscribe at some point :D
+            InteractionManager.InteractionSourcePressed += InteractionManager_ClickedXRInput;
         }
 #endif
 
@@ -291,6 +295,14 @@ namespace HoloToolkit.Examples.SpatialUnderstandingFeatureOverview
 
         public void OnInputClicked(InputClickedEventData eventData)
         {
+            if ((SpatialUnderstanding.Instance.ScanState == SpatialUnderstanding.ScanStates.Scanning) &&
+                !SpatialUnderstanding.Instance.ScanStatsReportStillWorking)
+            {
+                SpatialUnderstanding.Instance.RequestFinishScan();
+            }
+        }
+
+        private void InteractionManager_ClickedXRInput(InteractionSourcePressedEventArgs eventInfo) {            
             if ((SpatialUnderstanding.Instance.ScanState == SpatialUnderstanding.ScanStates.Scanning) &&
                 !SpatialUnderstanding.Instance.ScanStatsReportStillWorking)
             {
