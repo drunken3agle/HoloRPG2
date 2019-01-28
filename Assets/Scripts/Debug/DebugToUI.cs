@@ -1,6 +1,4 @@
-﻿#define SHOW_DEBUG
-
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,21 +8,26 @@ using UnityEngine.UI;
  */
  [RequireComponent(typeof(Text))]
 public class DebugToUI : MonoBehaviour {
-#if SHOW_DEBUG
 
-	[SerializeField] private Text debugOutput;
-	[SerializeField] private int maxLines;
+	[Tooltip("Maximum number of messages displayed"), Range(1, 30), SerializeField] 
+	private int MaxMessages = 15;
+
+	[Tooltip("Active duration after a message is reveiced, Set to 0 to disable fading"), Range(0.0f, 15.0f), SerializeField] 
+	private float FadeTime = 5.0f;
+	private float TimeSinceLastMessage = 0.0f;
 
 	private Queue<string> LogMessages;
-
-	void OnEnable() {
-		Application.logMessageReceived += PrintLogToSceen;
-
-		LogMessages = new Queue<string>(maxLines);
-	}
+	private Text DebugOutput;
 
 	void OnDisable() {
-		Application.logMessageReceived -= PrintLogToSceen;
+		Application.logMessageReceived -= ReceiveMessage;
+	}
+
+	void Start() {
+		DebugOutput = GetComponent<Text>();
+		LogMessages = new Queue<string>(MaxMessages);
+		
+		Application.logMessageReceived += ReceiveMessage;
 	}
 
 	void Update() {
@@ -33,12 +36,20 @@ public class DebugToUI : MonoBehaviour {
 			logString += message;
 		}
 
-		debugOutput.text = logString;
+		DebugOutput.text = logString;
+
+		TimeSinceLastMessage += Time.deltaTime;
+		if(TimeSinceLastMessage > FadeTime && FadeTime > 0.0000001f) { // Don't fadeout if timer is zero (floating point error)
+			DebugOutput.enabled = false;
+		}
 	}
 
-	private void PrintLogToSceen(string logString, string stackTrace, LogType type) {
+	private void ReceiveMessage(string logString, string stackTrace, LogType type) {
+		DebugOutput.enabled = true; // Active if fadeout has happened
+		TimeSinceLastMessage = 0.0f;
+
 		// Delete old messages before memory needs to be reallocated
-		if (LogMessages.Count == maxLines) { 
+		if (LogMessages.Count == MaxMessages) { 
 			LogMessages.Dequeue();
 		}
 
@@ -54,6 +65,4 @@ public class DebugToUI : MonoBehaviour {
 
 		LogMessages.Enqueue(outputLine);
 	}
-	
-#endif
 }
