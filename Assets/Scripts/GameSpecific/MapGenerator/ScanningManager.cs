@@ -6,7 +6,7 @@ using UnityEngine;
 // Set SpatialUnderstandingSurface Base+Wire color to black for transparent rendering
 
 /* Adapted from https://medium.com/southworks/how-to-use-spatial-understanding-to-query-your-room-with-hololens-4a6192831a6f */
-public class ScanningManager : MonoBehaviour {
+public class ScanningManager : Singleton<ScanningManager> {
 
     [Tooltip("Tutorial NPC"), SerializeField]
     private GameObject TutorialNPC;
@@ -45,8 +45,10 @@ public class ScanningManager : MonoBehaviour {
         }
     }
 
-    private void OnDestroy() {
+    protected override void OnDestroy() {
         SpatialUnderstanding.Instance.ScanStateChanged -= ScanStateChanged;
+        
+        base.OnDestroy();
     }
 
     void Update() {
@@ -87,7 +89,7 @@ public class ScanningManager : MonoBehaviour {
                     continue;
                 }
 
-                // Compare agains backwards vector if behindPlayer is true
+                // Compare against backwards vector if behindPlayer is true
                 float relativeAngle = Vector3.Angle((behindPlayer ? -transform.forward : transform.forward), _resultsTopology[i].position - transform.position);
                 if ((Math.Abs(relativeAngle) > angleThreshold)) {
                     continue;
