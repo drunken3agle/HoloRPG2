@@ -27,9 +27,14 @@ public class CriticaAttackEnemy : AbstractEnemy {
     {
         float attackDamage = AD;
         float chance = UnityEngine.Random.Range(0, 1.0f);
+        int questCompletedcount = 0; //make the enemy be more vicious in case of completion
         if (chance >= 1.0f - criticalChance)
         {
             attackDamage *= criticalFactor;
+        }
+        if (questCompletedcount > 0)
+        {
+            attackDamage *= attackDamage * 1.2f;
         }
         GameManger.Instance.InvokePlayerGotHit((int)attackDamage);
         myAudioSource.Play();
