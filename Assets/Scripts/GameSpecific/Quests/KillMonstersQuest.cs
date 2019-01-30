@@ -1,4 +1,4 @@
-﻿using System;
+﻿// using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -44,6 +44,9 @@ public class KillMonstersQuest : AbstractQuest
                    }*/
             }
         } 
-    }
 
+        AbstractEnemy nextEnemy = enemiesToKill[Random.Range(0, enemiesToKill.Length - 1)];
+        ScanningManager.Instance.SpawnOnFloor(nextEnemy.gameObject, nextEnemy.AttackRange, nextEnemy.AttackRange * 2,
+                                              0f, 45f);
+    }
 }

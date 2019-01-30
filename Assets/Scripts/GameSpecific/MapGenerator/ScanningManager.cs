@@ -7,7 +7,6 @@ using UnityEngine.XR.WSA.Input;
 
 // Set SpatialUnderstandingSurface Base+Wire color to black for transparent rendering
 
-/* Adapted from https://medium.com/southworks/how-to-use-spatial-understanding-to-query-your-room-with-hololens-4a6192831a6f */
 public class ScanningManager : Singleton<ScanningManager> {
 
     [Tooltip("Tutorial NPC"), SerializeField]
@@ -46,8 +45,6 @@ public class ScanningManager : Singleton<ScanningManager> {
             // Disable mesh rendering
             SpatialUnderstanding.Instance.UnderstandingCustomMesh.DrawProcessedMesh = false;
             SpatialMappingManager.Instance.DrawVisualMeshes = false;
-
-            InstantiateObjectOnFloor();
         }
     }
 
@@ -57,28 +54,7 @@ public class ScanningManager : Singleton<ScanningManager> {
         base.OnDestroy();
     }
 
-    void Update() {
-       
-    }
-
-    private void InstantiateObjectOnFloor() {
-        SpatialUnderstandingDllTopology.TopologyResult[] _resultsTopology = new SpatialUnderstandingDllTopology.TopologyResult[MaxResultCount];
-
-        var minLengthFloorSpace = 0.25f;
-        var minWidthFloorSpace = 0.25f;
-
-        var resultsTopologyPtr = SpatialUnderstanding.Instance.UnderstandingDLL.PinObject(_resultsTopology);
-        var locationCount = SpatialUnderstandingDllTopology.QueryTopology_FindPositionsOnFloor(minLengthFloorSpace, minWidthFloorSpace, 
-                                                                                               _resultsTopology.Length, resultsTopologyPtr);
-
-        if (locationCount > 0) {
-            Instantiate(Enemies[CurrentLevel], _resultsTopology[0].position, Quaternion.LookRotation(_resultsTopology[0].normal, Vector3.up));
-        } else {
-            Debug.Log("No suitable spawn position!");
-        }
-    }
-
-    private void SpawnOnFloor(GameObject ToSpawn, float distanceThreshold, float angleThreshold, bool behindPlayer) {
+    public void SpawnOnFloor(GameObject ToSpawn, float minDistance, float maxDistance, float minAngle, float maxAngle) {
         SpatialUnderstandingDllTopology.TopologyResult[] _resultsTopology = new SpatialUnderstandingDllTopology.TopologyResult[MaxResultCount];
         IntPtr resultsTopologyPtr = SpatialUnderstanding.Instance.UnderstandingDLL.PinObject(_resultsTopology);
 
@@ -90,15 +66,10 @@ public class ScanningManager : Singleton<ScanningManager> {
             bool successful = false;
             for (uint i = 0; i < locationCount; ++i) {
                 float distanceFromPlayer = Vector3.Distance(_resultsTopology[i].position, transform.position);
-                if (distanceFromPlayer > distanceThreshold) {
-                    continue;
-                }
+                if (distanceFromPlayer > maxDistance || distanceFromPlayer < minDistance) { continue; }
 
-                // Compare against backwards vector if behindPlayer is true
-                float relativeAngle = Vector3.Angle((behindPlayer ? -transform.forward : transform.forward), _resultsTopology[i].position - transform.position);
-                if ((Math.Abs(relativeAngle) > angleThreshold)) {
-                    continue;
-                }
+                float relativeAngle = Vector3.Angle(transform.forward, _resultsTopology[i].position - transform.position);
+                if (relativeAngle > maxAngle || relativeAngle < minAngle) { continue; } 
 
                 // Suitable location found!
                 Instantiate(ToSpawn, _resultsTopology[i].position, Quaternion.LookRotation(_resultsTopology[0].normal, Vector3.up));
