@@ -6,12 +6,15 @@ using UnityEngine;
 using UnityEngine.XR.WSA.Input;
 
 public class ScanningManager : Singleton<ScanningManager> {
-    
+
     [Tooltip("Max number of possible positions returned"), Range(1, 64), SerializeField]
     private int MaxResultCount = 32;
 
     [Tooltip("GameObjects to disable when scanning has finsihed!"), SerializeField]
     private GameObject[] ToDisable;
+
+    [Tooltip("GameObjects to enable when scanning has finsihed!"), SerializeField]
+    private GameObject[] ToEnable;
 
     void Start() {
         SpatialUnderstanding.Instance.ScanStateChanged += ScanStateChanged;
@@ -30,6 +33,12 @@ public class ScanningManager : Singleton<ScanningManager> {
             foreach(GameObject g in ToDisable) {
                 Debug.Log("ScanningManager: Disabled " + g.name);
                 g.SetActive(false);
+            }
+
+            // Disable all elements in ToDisable
+            foreach(GameObject g in ToEnable) {
+                Debug.Log("ScanningManager: Disabled " + g.name);
+                g.SetActive(true);
             }
 
             // Disable mesh rendering
