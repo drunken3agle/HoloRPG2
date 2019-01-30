@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using HoloToolkit.Unity;
 
 public class QuestManager : Singleton<QuestManager> {
 
@@ -9,6 +10,42 @@ public class QuestManager : Singleton<QuestManager> {
     private List<IQuest> acceptedQuests;
     // completed quests (no instance)
     private List<IQuest> completedQuests;
+
+    [Tooltip("NPC providing quests"), SerializeField] 
+    private GameObject QuestNPC;
+
+    private GameObject NPCInstance = null;
+
+    void Start() {
+        SpatialUnderstanding.Instance.ScanStateChanged += StartGame;
+        GameManger.Instance.QuestCompleted += QuestFinished;
+        GameManger.Instance.QuestTaken += QuestStarted;
+    }
+
+    protected override void OnDestroy(){
+        SpatialUnderstanding.Instance.ScanStateChanged -= StartGame;
+        GameManger.Instance.QuestCompleted -= QuestFinished;
+        GameManger.Instance.QuestTaken -= QuestStarted;
+
+        base.OnDestroy();
+    }
+
+    private void StartGame(){
+        if (SpatialUnderstanding.Instance.ScanState == SpatialUnderstanding.ScanStates.Done) {   
+            NPCInstance = ScanningManager.Instance.SpawnOnFloor(QuestNPC, 1f, 5f, 90f, 180f);
+        }
+    }
+
+    private void QuestStarted(IQuest quest) {
+        if (NPCInstance != null) { 
+            Destroy(NPCInstance); 
+            NPCInstance = null;
+        }
+    }
+
+    private void QuestFinished(IQuest quest) {        
+        NPCInstance = ScanningManager.Instance.SpawnOnFloor(QuestNPC, 1f, 5f, 90f, 180f);
+    }
 
     protected override void Awake()
     {

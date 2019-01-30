@@ -524,16 +524,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2219f8a16c4249342b41b72271680ed8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TutorialNPC: {fileID: 1004531890468314, guid: f6b1baf622c612c40b32f7a868da334e,
-    type: 2}
-  Enemies:
-  - {fileID: 1243858668362724, guid: 33e395040d67d1c4abd0ee2ae95cac71, type: 2}
   MaxResultCount: 32
   ToDisable:
   - {fileID: 1610185613}
   - {fileID: 1017781664}
   - {fileID: 1356080349}
   - {fileID: 1168249340}
+  - {fileID: 1216070042}
+  - {fileID: 984880897}
 --- !u!114 &167881858
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1683,6 +1681,12 @@ Prefab:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114203934769838284, guid: 70fa1e5b4a23e3948af2af2879eab60e,
+        type: 2}
+      propertyPath: QuestNPC
+      value: 
+      objectReference: {fileID: 1004531890468314, guid: f6b1baf622c612c40b32f7a868da334e,
+        type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 70fa1e5b4a23e3948af2af2879eab60e, type: 2}
   m_IsPrefabAsset: 0
@@ -1882,6 +1886,11 @@ Prefab:
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 181617bd311a5074baf69ce7e7344a85, type: 2}
   m_IsPrefabAsset: 0
+--- !u!1 &984880897 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1376480383378254, guid: 181617bd311a5074baf69ce7e7344a85,
+    type: 2}
+  m_PrefabInternal: {fileID: 984880896}
 --- !u!1 &1017781664
 GameObject:
   m_ObjectHideFlags: 0
@@ -2355,6 +2364,11 @@ Prefab:
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 22fa418c4046a1e41b4f834a87f4f527, type: 2}
   m_IsPrefabAsset: 0
+--- !u!1 &1216070042 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1832395023364660, guid: 22fa418c4046a1e41b4f834a87f4f527,
+    type: 2}
+  m_PrefabInternal: {fileID: 1216070041}
 --- !u!1 &1252070663
 GameObject:
   m_ObjectHideFlags: 0
@@ -2546,7 +2560,7 @@ Prefab:
     - target: {fileID: 224858955776986106, guid: 6c614824b271acb4aadd5bdf4528d1f8,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: 108.99964
+      value: 108.99963
       objectReference: {fileID: 0}
     - target: {fileID: 224858955776986106, guid: 6c614824b271acb4aadd5bdf4528d1f8,
         type: 2}

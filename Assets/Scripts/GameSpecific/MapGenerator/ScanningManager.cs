@@ -5,18 +5,8 @@ using HoloToolkit.Unity.InputModule;
 using UnityEngine;
 using UnityEngine.XR.WSA.Input;
 
-// Set SpatialUnderstandingSurface Base+Wire color to black for transparent rendering
-
 public class ScanningManager : Singleton<ScanningManager> {
-
-    [Tooltip("Tutorial NPC"), SerializeField]
-    private GameObject TutorialNPC;
     
-    [Tooltip("List of spawnable enemies. Sort by level!") , SerializeField]
-    private GameObject[] Enemies;
-
-    private uint CurrentLevel = 0; // use as index for enemies
-
     [Tooltip("Max number of possible positions returned"), Range(1, 64), SerializeField]
     private int MaxResultCount = 32;
 
@@ -54,7 +44,7 @@ public class ScanningManager : Singleton<ScanningManager> {
         base.OnDestroy();
     }
 
-    public void SpawnOnFloor(GameObject ToSpawn, float minDistance, float maxDistance, float minAngle, float maxAngle) {
+    public GameObject SpawnOnFloor(GameObject ToSpawn, float minDistance, float maxDistance, float minAngle, float maxAngle) {
         SpatialUnderstandingDllTopology.TopologyResult[] _resultsTopology = new SpatialUnderstandingDllTopology.TopologyResult[MaxResultCount];
         IntPtr resultsTopologyPtr = SpatialUnderstanding.Instance.UnderstandingDLL.PinObject(_resultsTopology);
 
@@ -63,7 +53,7 @@ public class ScanningManager : Singleton<ScanningManager> {
                                                                                                _resultsTopology.Length, resultsTopologyPtr);
 
         if(locationCount > 0) {
-            bool successful = false;
+            GameObject newlySpawned = null;
             for (uint i = 0; i < locationCount; ++i) {
                 float distanceFromPlayer = Vector3.Distance(_resultsTopology[i].position, transform.position);
                 if (distanceFromPlayer > maxDistance || distanceFromPlayer < minDistance) { continue; }
@@ -72,16 +62,19 @@ public class ScanningManager : Singleton<ScanningManager> {
                 if (relativeAngle > maxAngle || relativeAngle < minAngle) { continue; } 
 
                 // Suitable location found!
-                Instantiate(ToSpawn, _resultsTopology[i].position, Quaternion.LookRotation(_resultsTopology[0].normal, Vector3.up));
-                successful = true;
+                newlySpawned = Instantiate(ToSpawn, _resultsTopology[i].position, Quaternion.LookRotation(_resultsTopology[0].normal, Vector3.up));
                 break;
             } 
             
-            if (!successful) { 
+            if (newlySpawned != null) { 
+                return newlySpawned;
+            } else {
                 Debug.Log("Unable to spawn GameObject: No suitable location"); 
             }
         } else {
             Debug.Log("Unable to spawn GameObject: No locations found");
         }
+
+        return null;
     }
 }
