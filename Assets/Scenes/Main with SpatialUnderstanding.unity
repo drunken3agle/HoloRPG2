@@ -491,7 +491,6 @@ GameObject:
   - component: {fileID: 167881860}
   - component: {fileID: 167881859}
   - component: {fileID: 167881858}
-  - component: {fileID: 167881857}
   m_Layer: 0
   m_Name: AppState
   m_TagString: Untagged
@@ -517,30 +516,6 @@ Transform:
   m_Father: {fileID: 970299101}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &167881857
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 114952070944458760, guid: 87d54c8421f5d0b4e9a8be500d1c8bd4,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 167881855}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2219f8a16c4249342b41b72271680ed8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  MaxResultCount: 32
-  ToDisable:
-  - {fileID: 1610185613}
-  - {fileID: 1017781664}
-  - {fileID: 1356080349}
-  - {fileID: 1168249340}
-  - {fileID: 1216070042}
-  - {fileID: 984880897}
-  - {fileID: 469703145}
-  ToEnable:
-  - {fileID: 18232554}
-  - {fileID: 1230233479}
 --- !u!114 &167881858
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2085,6 +2060,7 @@ GameObject:
   - component: {fileID: 1118282406}
   - component: {fileID: 1118282413}
   - component: {fileID: 1118282414}
+  - component: {fileID: 1118282415}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -2196,6 +2172,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isPlayer: 1
+--- !u!114 &1118282415
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1118282405}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2219f8a16c4249342b41b72271680ed8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxResultCount: 32
+  ToDisable:
+  - {fileID: 1610185613}
+  - {fileID: 1017781664}
+  - {fileID: 1356080349}
+  - {fileID: 1168249340}
+  - {fileID: 1216070042}
+  - {fileID: 984880897}
+  - {fileID: 469703145}
+  ToEnable:
+  - {fileID: 18232554}
+  - {fileID: 1230233479}
+  AppState: {fileID: 167881855}
 --- !u!1 &1135432836
 GameObject:
   m_ObjectHideFlags: 0
