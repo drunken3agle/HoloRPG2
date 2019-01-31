@@ -84,12 +84,16 @@ public class SpellsManager : Singleton<SpellsManager>, IKeywordCommandProvider
         currentSpell = fire_equipedSpell;
 
 
-        // Gesture
+        // Gestures
+        // from Hololens:
         InteractionManager.InteractionSourcePressed += InteractionManager_SourcePressed;
         InteractionManager.InteractionSourceReleased += InteractionManager_SourceReleased;
         InteractionManager.InteractionSourceDetected += InteractionManager_SourceDetected;
         InteractionManager.InteractionSourceUpdated += InteractionManager_SourceUpdated;
         InteractionManager.InteractionSourceLost += InteractionManager_SourceLost;
+        // from LeapMotion
+        LMGestureManager.Instance.GesturePerformed += OnGestureTracked;
+
 
         GameManger.Instance.ItemCollected += OnItemCollected;
         
@@ -97,6 +101,8 @@ public class SpellsManager : Singleton<SpellsManager>, IKeywordCommandProvider
         // Voice Command
         KeywordCommandManager.Instance.AddKeywordCommandProvider(this);
     }
+
+    
 
     private void OnItemCollected(IITem item)
     {
@@ -174,6 +180,16 @@ public class SpellsManager : Singleton<SpellsManager>, IKeywordCommandProvider
     {
         HideHand();
     }
+
+    private void OnGestureTracked(GestureType gestureType)
+    {
+        if (gestureType == GestureType.FireBall)
+        {
+            Fire();
+        }
+    }
+
+
 
     private void ShowHand()
     {
