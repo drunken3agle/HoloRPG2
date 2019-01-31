@@ -64,9 +64,11 @@ public abstract class AbstracNpc : PoiAnchor, INpc, IKeywordCommandProvider {
         base.Start();
 
         KeywordCommandManager.Instance.AddKeywordCommandProvider(this);
+        LMGestureManager.Instance.GesturePerformed += OnGesturePerformed;
     }
 
     
+
     protected override void Update()
     {
         base.Update();
@@ -148,6 +150,21 @@ public abstract class AbstracNpc : PoiAnchor, INpc, IKeywordCommandProvider {
         result.Add(new KeywordCommand(() => { OnNo(); }, condPlayerInRange.And(condYesNoQuestion), "No", KeyCode.B));
 
         return result;
+    }
+
+    private void OnGesturePerformed(GestureType gestureType)
+    {
+        if (gestureType == GestureType.Wave)
+        {
+            if ((PlayerInRange == true) && (isTalking == false))
+            {
+                OnHi();
+            }
+            else if ((PlayerInRange == true) && (isWaitingForAnswer == true))
+            {
+                OnYes();
+            }
+        }
     }
 
     private void OnHi()
