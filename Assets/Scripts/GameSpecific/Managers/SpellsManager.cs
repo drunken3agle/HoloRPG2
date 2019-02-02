@@ -181,7 +181,7 @@ public class SpellsManager : Singleton<SpellsManager>, IKeywordCommandProvider
         HideHand();
     }
 
-    private void OnGestureTracked(GestureType gestureType)
+    private void OnGestureTracked(GestureType gestureType, HandSide handSide)
     {
         if (gestureType == GestureType.FireBall)
         {
