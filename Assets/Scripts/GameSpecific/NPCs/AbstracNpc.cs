@@ -152,7 +152,7 @@ public abstract class AbstracNpc : PoiAnchor, INpc, IKeywordCommandProvider {
         return result;
     }
 
-    private void OnGesturePerformed(GestureType gestureType)
+    private void OnGesturePerformed(GestureType gestureType, HandSide handSide)
     {
         if (gestureType == GestureType.Wave)
         {

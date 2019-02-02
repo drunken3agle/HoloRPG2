@@ -16,7 +16,9 @@ public struct HandTrackingThresholds
 
 public class LMGestureManager : Singleton<LMGestureManager> {
 
-    public event System.Action<GestureType> GesturePerformed;
+    public event System.Action<GestureType, HandSide> GesturePerformed;
+
+  
 
     [SerializeField] private float handOpenThreshold = 0.89f;
     [SerializeField] private float handClosedThreshold = 0.15f;
@@ -28,44 +30,19 @@ public class LMGestureManager : Singleton<LMGestureManager> {
 
     private HandTrackingThresholds handTrackingThresholds;
 
-    private Transform rightHandTrans;
-    private Transform leftHandTrans;
+    [SerializeField] private Transform rightHandTrans;
+    [SerializeField] private Transform leftHandTrans;
     private List<HandGesture> gestures;
 
-    private HandTracking leftHand;
-    private HandTracking rightHand;
-
+    private HandTracking leftHandTracking;
+    private HandTracking rightHandTracking;
 
     private Controller controller;
-   
-    void Start ()
-    {
-        // Look for hand references in the scene
-        bool foundLeftHand  = false;
-        bool foundRightHand = false;
-        
-        foreach(HandReference handReference in Resources.FindObjectsOfTypeAll<HandReference>())
-        {
-            if (handReference.HandSide == HandSide.Left)
-            {
-                leftHandTrans = handReference.transform;
-                foundLeftHand = true;
-            }
-            else if (handReference.HandSide == HandSide.Right)
-            {
-                rightHandTrans = handReference.transform;
-                foundRightHand = true;
-            }
-        }
-        if (foundRightHand == false)
-        {
-            Debug.LogError("Right hand reference not found in the scene!");
-        }
-        if (foundLeftHand == false)
-        {
-            Debug.LogError("Left hand reference not found in the scene!");
-        }
 
+
+
+    private void Start ()
+    {
         controller  = new Controller();
 
         // Set up thresholds struct
@@ -77,9 +54,10 @@ public class LMGestureManager : Singleton<LMGestureManager> {
         handTrackingThresholds.HandClosedThreshold          = handClosedThreshold;
 
         // Create hand instances
-        leftHand    = new HandTracking(leftHandTrans,   handTrackingThresholds);
-        rightHand   = new HandTracking(rightHandTrans,  handTrackingThresholds);
+        leftHandTracking    = new HandTracking(leftHandTrans,   handTrackingThresholds, HandSide.Left);
+        rightHandTracking   = new HandTracking(rightHandTrans,  handTrackingThresholds, HandSide.Right);
 
+        // Add gestures
         gestures = new List<HandGesture>();
         foreach(HandGesture handGesture in gesturesDatabank)
         {
@@ -97,58 +75,80 @@ public class LMGestureManager : Singleton<LMGestureManager> {
 
         foreach(Hand hand in hands)
         {
-
             if (hand.IsLeft)
             {
-                bool justShowedUp = leftHand.IsVisible == false;
-                leftHand.UpdateHandTracking(hand.GrabAngle, justShowedUp);
-                leftHand.UpdateHandStates(Camera.main.transform, justShowedUp);
+                bool justShowedUp = leftHandTracking.IsVisible == false;
+                leftHandTracking.UpdateHandTracking(hand.GrabAngle, leftHandTrans, justShowedUp);
+                leftHandTracking.UpdateHandStates(Camera.main.transform, justShowedUp);
+                CheckForPerformedGesture(leftHandTracking);
                 leftHandSeen = true;
             }
 
             if (hand.IsRight)
             {
-                bool justShowedUp = rightHand.IsVisible == false;
-                rightHand.UpdateHandTracking(hand.GrabAngle, justShowedUp);
-                rightHand.UpdateHandStates(Camera.main.transform, justShowedUp);
+                bool justShowedUp = rightHandTracking.IsVisible == false;
+                rightHandTracking.UpdateHandTracking(hand.GrabAngle, rightHandTrans, justShowedUp);
+                rightHandTracking.UpdateHandStates(Camera.main.transform, justShowedUp);
+                CheckForPerformedGesture(rightHandTracking);
                 rightHandSeen = true;
-
-                foreach (HandState handState in rightHand.CurrentStates)
-                {
-                    if (rightHand.IsStateFreshlyTracked(handState))
-                    {
-                        foreach(HandGesture handGesture in gestures)
-                        {
-                            if (handGesture.ContainsHandState(handState))
-                            {
-                                bool gestureCompleted = handGesture.AddTrackedHandState(handState);
-
-                                if (gestureCompleted == true)
-                                {
-                                    Debug.Log("Gesture " + handGesture.GestureType.ToString() + " performed");
-
-                                }
-                            }
-                        }
-                    }
-                }
-       
-
-
-
-                DrawArrow.ForDebug(rightHand.Position, rightHand.Direction);
-                DrawArrow.ForDebug(rightHand.Position, rightHand.VelocityDirection);
             }
         }
 
         // Update hands sight status
-        leftHand.IsVisible = leftHandSeen;
-        rightHand.IsVisible = rightHandSeen;
+        leftHandTracking.IsVisible = leftHandSeen;
+        rightHandTracking.IsVisible = rightHandSeen;
     }
+
+
+
+    private void CheckForPerformedGesture(HandTracking handTracking)
+    {
+        foreach (HandState handState in handTracking.CurrentStates)
+        {
+            if (handTracking.IsStateFreshlyTracked(handState))
+            {
+                foreach (HandGesture handGesture in gestures)
+                {
+                    if (handGesture.ContainsHandState(handState))
+                    {
+                        bool gestureCompleted = handGesture.AddTrackedHandState(handState);
+
+                        if (gestureCompleted == true)
+                        {
+                            Debug.Log("Gesture " + handGesture.GestureType.ToString() + " performed on " + handTracking.HandSide.ToString());
+                            if (GesturePerformed != null) GesturePerformed.Invoke(handGesture.GestureType, handTracking.HandSide);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 }
 
 
+// Look for hand references in the scene
+//bool foundLeftHand = false;
+//bool foundRightHand = false;
 
-
-//Vector palmPositionInLMSpace = Leap.Unity.UnityMatrixExtension.GetLeapMatrix(handRight).TransformPoint(hand.PalmPosition);
-//palmPosition = Leap.Unity.UnityVectorExtension.ToVector3(palmPositionInLMSpace);
+//foreach (HandReference handReference in FindObjectsOfType<HandReference>())
+//{
+//    if (handReference.HandSide == HandSide.Left)
+//    {
+//        leftHandTrans = handReference.gameObject.transform;
+//        foundLeftHand = true;
+//    }
+//    else if (handReference.HandSide == HandSide.Right)
+//    {
+//        rightHandTrans = handReference.gameObject.transform;
+//        foundRightHand = true;
+//    }
+//}
+//if (foundRightHand == false)
+//{
+//    Debug.LogError("Right hand reference not found in the scene!");
+//}
+//if (foundLeftHand == false)
+//{
+//    Debug.LogError("Left hand reference not found in the scene!");
+//}
