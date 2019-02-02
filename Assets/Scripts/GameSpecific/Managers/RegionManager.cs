@@ -58,7 +58,7 @@ public class RegionManager : Singleton<RegionManager> {
     }
 
     [SerializeField]
-    private RegionDecoration[] regionDecorations;
+    public RegionDecoration[] regionDecorations;
 
     private bool initComplete = false;
     private Region currentRegion;

@@ -152,11 +152,11 @@ public abstract class AbstracNpc : PoiAnchor, INpc, IKeywordCommandProvider {
         return result;
     }
 
-    private void OnGesturePerformed(GestureType gestureType, HandSide handSide)
+    private void OnGesturePerformed(GestureType gestureType, HandTracking handSide)
     {
         if (gestureType == GestureType.Wave)
         {
-            if ((PlayerInRange == true) && (isTalking == false))
+            if ((PlayerInRange == true) && (isTalking == false) && (isWaitingForAnswer == false))
             {
                 OnHi();
             }

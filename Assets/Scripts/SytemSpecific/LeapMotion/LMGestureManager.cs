@@ -16,7 +16,7 @@ public struct HandTrackingThresholds
 
 public class LMGestureManager : Singleton<LMGestureManager> {
 
-    public event System.Action<GestureType, HandSide> GesturePerformed;
+    public event System.Action<GestureType, HandTracking> GesturePerformed;
 
   
 
@@ -116,7 +116,7 @@ public class LMGestureManager : Singleton<LMGestureManager> {
                         if (gestureCompleted == true)
                         {
                             Debug.Log("Gesture " + handGesture.GestureType.ToString() + " performed on " + handTracking.HandSide.ToString());
-                            if (GesturePerformed != null) GesturePerformed.Invoke(handGesture.GestureType, handTracking.HandSide);
+                            if (GesturePerformed != null) GesturePerformed.Invoke(handGesture.GestureType, handTracking);
                         }
                     }
                 }

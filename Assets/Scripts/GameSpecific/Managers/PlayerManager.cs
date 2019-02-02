@@ -61,7 +61,8 @@ public class PlayerManager : Singleton<PlayerManager> {
         if (playerLife < 0)
         {
             playerLife = 0;
-         //   Notify.Show("You have died!", 7);
+            GameManger.Instance.InvokePlayerDied();
+            Notify.Show("You have died!", 7);
         }
         GameManger.Instance.InvokeUpdateCanvasUI();   
     }

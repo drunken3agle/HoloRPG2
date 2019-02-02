@@ -4,6 +4,8 @@ using HoloToolkit.Unity.SpatialMapping;
 using HoloToolkit.Unity.InputModule;
 using UnityEngine;
 using UnityEngine.XR.WSA.Input;
+using System.Collections;
+using System.Collections.Generic;
 
 public class ScanningManager : Singleton<ScanningManager> {
 
@@ -51,7 +53,7 @@ public class ScanningManager : Singleton<ScanningManager> {
     }
 
     protected override void OnDestroy() {
-        SpatialUnderstanding.Instance.ScanStateChanged -= ScanStateChanged;
+        //SpatialUnderstanding.Instance.ScanStateChanged -= ScanStateChanged;
         
         base.OnDestroy();
     }
@@ -60,19 +62,12 @@ public class ScanningManager : Singleton<ScanningManager> {
         Debug.Log("Trying to spawn " + ToSpawn.name);
 
         SpatialUnderstandingDllTopology.TopologyResult[] _resultsTopology = new SpatialUnderstandingDllTopology.TopologyResult[MaxResultCount];
-
-        Debug.Log("Preparing results");
+        List<SpatialUnderstandingDllTopology.TopologyResult> possibleSpawnLocations = new List<SpatialUnderstandingDllTopology.TopologyResult>();
 
         IntPtr resultsTopologyPtr = SpatialUnderstanding.Instance.UnderstandingDLL.PinObject(_resultsTopology);
 
-        
-        Debug.Log("Pinning results in memory");
-
         Vector3 dimensions = Vector3.one; //ToSpawn.GetComponent<Renderer>().bounds.size;
-
         
-        Debug.Log("Renderer size received");
-
         int locationCount = SpatialUnderstandingDllTopology.QueryTopology_FindPositionsOnFloor(dimensions.x, dimensions.z, 
                                                                                                _resultsTopology.Length, resultsTopologyPtr);
 
@@ -81,21 +76,25 @@ public class ScanningManager : Singleton<ScanningManager> {
 
             GameObject newlySpawned = null;
             for (uint i = 0; i < locationCount; ++i) {
-                float distanceFromPlayer = Vector3.Distance(_resultsTopology[i].position, transform.position);
+                float distanceFromPlayer = Vector3.Distance(_resultsTopology[i].position, Camera.main.transform.position);
                 if (distanceFromPlayer > maxDistance || distanceFromPlayer < minDistance) { continue; }
 
                 Debug.Log("Found floor patch with correct size");
 
-                float relativeAngle = Vector3.Angle(transform.forward, _resultsTopology[i].position - transform.position);
+                float relativeAngle = Vector3.Angle(Camera.main.transform.forward, _resultsTopology[i].position - Camera.main.transform.position);
                 if (relativeAngle > maxAngle || relativeAngle < minAngle) { continue; } 
                 
-                Debug.Log("Found floor patch at correct angle");
+                possibleSpawnLocations.Add(_resultsTopology[i]);
+            }
 
-                // Suitable location found!
-                newlySpawned = Instantiate(ToSpawn, _resultsTopology[i].position, Quaternion.LookRotation(_resultsTopology[0].normal, Vector3.up));
-                break;
-            } 
-            
+            int randomIndex = Utils.GetRndIndex(possibleSpawnLocations.Count);
+            SpatialUnderstandingDllTopology.TopologyResult spawnLocation = possibleSpawnLocations[randomIndex];
+
+            Debug.Log("Spawning at index " + randomIndex + " at position : " + spawnLocation.position.ToString());
+            // Suitable location found!
+            newlySpawned = Instantiate(ToSpawn, spawnLocation.position, Quaternion.LookRotation(spawnLocation.normal, Vector3.up));
+
+
             if (newlySpawned != null) { 
                 return newlySpawned;
             } else {

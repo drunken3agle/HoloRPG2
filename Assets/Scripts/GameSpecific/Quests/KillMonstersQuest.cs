@@ -38,15 +38,11 @@ public class KillMonstersQuest : AbstractQuest
             if (enemy.EnemyName == enemyToKill.EnemyName)
             {
                 KilledMonsters++;
-                /*   if (QuestCompleted() == true)
-                   {
-                       QuestManager.Instance.OnQuestCompleted(this);
-                   }*/
+                if (QuestCompleted() == true)
+                {
+                    QuestManager.Instance.OnQuestCompleted(this);
+                }
             }
         } 
-
-        AbstractEnemy nextEnemy = enemiesToKill[Random.Range(0, enemiesToKill.Length - 1)];
-        ScanningManager.Instance.SpawnOnFloor(nextEnemy.gameObject, nextEnemy.AttackRange, nextEnemy.AttackRange * 2,
-                                              0f, 45f);
     }
 }

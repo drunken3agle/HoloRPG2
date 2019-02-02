@@ -19,6 +19,16 @@ public class GameManger : Singleton<GameManger> {
         }
     }
 
+    public event Action PlayerDied;
+    public void InvokePlayerDied()
+    {
+        if (PlayerDied != null)
+        {
+            PlayerDied.Invoke();
+            UpdateCanvasUI.Invoke();
+        }
+    }
+
     public event Action<int> PlayerGainedXP;
     public void InvokePlayerGainedXP(int xp)
     {

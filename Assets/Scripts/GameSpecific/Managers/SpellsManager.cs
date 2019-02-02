@@ -79,18 +79,20 @@ public class SpellsManager : Singleton<SpellsManager>, IKeywordCommandProvider
        /* rock_Spells.Add(Resources.Load<GameObject>("S_RockZone").GetComponent<ISpell>());
         rock_equipedSpell = rock_Spells[0];*/
 
-        /*dark_Spells.Add(Resources.Load<GameObject>("S_DarkBall").GetComponent<ISpell>());
-        dark_equipedSpell = dark_Spells[0];*/
+        dark_Spells.Add(Resources.Load<GameObject>("S_DarkBall").GetComponent<ISpell>());
+        dark_equipedSpell = dark_Spells[0];
+
         currentSpell = fire_equipedSpell;
 
 
         // Gestures
         // from Hololens:
-        InteractionManager.InteractionSourcePressed += InteractionManager_SourcePressed;
-        InteractionManager.InteractionSourceReleased += InteractionManager_SourceReleased;
-        InteractionManager.InteractionSourceDetected += InteractionManager_SourceDetected;
-        InteractionManager.InteractionSourceUpdated += InteractionManager_SourceUpdated;
-        InteractionManager.InteractionSourceLost += InteractionManager_SourceLost;
+        //InteractionManager.InteractionSourcePressed += InteractionManager_SourcePressed;
+        //InteractionManager.InteractionSourceReleased += InteractionManager_SourceReleased;
+        //InteractionManager.InteractionSourceDetected += InteractionManager_SourceDetected;
+        //InteractionManager.InteractionSourceUpdated += InteractionManager_SourceUpdated;
+        //InteractionManager.InteractionSourceLost += InteractionManager_SourceLost;
+
         // from LeapMotion
         LMGestureManager.Instance.GesturePerformed += OnGestureTracked;
 
@@ -181,11 +183,30 @@ public class SpellsManager : Singleton<SpellsManager>, IKeywordCommandProvider
         HideHand();
     }
 
-    private void OnGestureTracked(GestureType gestureType, HandSide handSide)
+
+
+    private void OnGestureTracked(GestureType gestureType, HandTracking handTracking)
     {
         if (gestureType == GestureType.FireBall)
         {
-            Fire();
+            switch(handTracking.HandSide)
+            {
+                case HandSide.Left:
+                    if ((Time.time - timeSinceLastFire) >= dark_equipedSpell.FireRate)
+                    {
+                        MakeSpell.InstantiateObj(dark_equipedSpell.SpellID, handTracking.Position, Camera.main.transform.forward);
+                        timeSinceLastFire = Time.time;
+                    }
+                    break;
+
+                case HandSide.Right:
+                    if ((Time.time - timeSinceLastFire) >= fire_equipedSpell.FireRate)
+                    {
+                        MakeSpell.InstantiateObj(fire_equipedSpell.SpellID, handTracking.Position, Camera.main.transform.forward);
+                        timeSinceLastFire = Time.time;
+                    }
+                    break;
+            }
         }
     }
 
