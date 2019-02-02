@@ -15,15 +15,8 @@ public enum HandState
 
 public class HandTracking {
 
-    public HandTracking(Transform handTransform, HandTrackingThresholds handTrackingThresholds)
-    {
-        this.handTransform = handTransform;
-        this.handTrackingThresholds = handTrackingThresholds;
-        IsVisible = false;
-        currentStates = new List<HandState>();
-        lastStates = new List<HandState>();
-    }
 
+    public HandSide HandSide;
     public bool IsVisible;
     public Vector3 Position { get { return position; } }
     public Vector3 Direction { get { return direction; } }
@@ -44,21 +37,33 @@ public class HandTracking {
     private List<HandState> currentStates;
     private List<HandState> lastStates;
 
-    public void UpdateHandTracking(float grabAngle, bool handJustShowedUp = false)
+
+
+    public HandTracking(Transform handTransform, HandTrackingThresholds handTrackingThresholds, HandSide handSide)
+    {
+        this.handTransform = handTransform;
+        this.handTrackingThresholds = handTrackingThresholds;
+        this.HandSide = handSide;
+        IsVisible = false;
+        currentStates = new List<HandState>();
+        lastStates = new List<HandState>();
+    }
+
+    public void UpdateHandTracking(float grabAngle, Transform handReferenceTransform, bool handJustShowedUp = false)
     {
         // make sure to give a valid value to lastPosition
         if (handJustShowedUp == true)
         {
-            lastPosition = handTransform.position;
+            lastPosition = handReferenceTransform.position;
         }
         else
         {
             lastPosition = position;
         }
         // update all other values from transform
-        position = handTransform.position;
+        position = handReferenceTransform.position;
         velocity = position - lastPosition;
-        direction = handTransform.forward;
+        direction = handReferenceTransform.forward;
 
         // update how proportional value how far the palm is open
         handOpenness = 1.0f - (grabAngle / 3.14f);
