@@ -7611,11 +7611,6 @@ Prefab:
       propertyPath: leftHandTrans
       value: 
       objectReference: {fileID: 1657982740}
-    - target: {fileID: 114559898537062840, guid: 20fad84189636e84ba674158a5f2788b,
-        type: 2}
-      propertyPath: forwardVelocityThreshold
-      value: 3.5
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 20fad84189636e84ba674158a5f2788b, type: 2}
   m_IsPrefabAsset: 0
