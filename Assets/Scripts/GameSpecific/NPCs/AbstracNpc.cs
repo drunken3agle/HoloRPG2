@@ -80,7 +80,7 @@ public abstract class AbstracNpc : PoiAnchor, INpc, IKeywordCommandProvider {
                 TurnTo(Camera.main.transform.position);
                 if (playerWasInRange == false)
                 {
-                    myHintUI.SetHintText("Say <b>HELLO</b>");
+                    myHintUI.SetHintText("Wave with your hand");
                     playerWasInRange = true;
                 }
             }
@@ -201,7 +201,7 @@ public abstract class AbstracNpc : PoiAnchor, INpc, IKeywordCommandProvider {
                         Say(currentQuest.mainQuestClip, () => 
                         {
                             isWaitingForAnswer = true;
-                            myHintUI.SetHintText("say <b>YES</b> or <b>NO</b>");
+                            myHintUI.SetHintText("Wave to accept quest");
                         });
                     }
                     else

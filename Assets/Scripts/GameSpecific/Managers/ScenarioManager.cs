@@ -5,6 +5,7 @@ using HoloToolkit.Unity;
 using System;
 using UnityEngine.XR.WSA.Input;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public enum ScenarioState
 {
@@ -27,7 +28,10 @@ public class ScenarioManager : MonoBehaviour {
     [SerializeField] private float delayToSpawnNPC = 2.0f;
     [SerializeField] private float delayToSpawnFirstEnemy = 2.4f;
     [SerializeField] private float delayToSpawnEnemy = 1.3f;
-    
+
+    [SerializeField] private AudioSource background_AudioSource;
+    [SerializeField] private AudioSource gameOver_AudioSource;
+    [SerializeField] private Image gameOver_sprite;
 
     private ScenarioState CurrentState;
 
@@ -54,21 +58,25 @@ public class ScenarioManager : MonoBehaviour {
         switch (newState)
         {
             case ScenarioState.Game_Started:
+                background_AudioSource.Play();
                 DecorateScene();
                 StartCoroutine(SpawnNPCCoroutine());
                 break;
 
             case ScenarioState.Quest_Accepted:
-                npcInstance.GetComponent<AbstractAnchor>().AnchorPosition += Vector3.forward * 5; 
+                npcInstance.GetComponent<AbstractAnchor>().AnchorPosition += Vector3.forward * 20; 
                 StartCoroutine(SpawnEnemyCoroutine(enemy1, delayToSpawnFirstEnemy));   
                 break;
 
             case ScenarioState.Quest_Finished:
                 StopAllCoroutines();
-                npcInstance.GetComponent<AbstractAnchor>().AnchorPosition -= Vector3.forward * 5;
+                npcInstance.GetComponent<AbstractAnchor>().AnchorPosition -= Vector3.forward * 20;
                 break;
 
             case ScenarioState.Game_Over:
+                background_AudioSource.Stop();
+                gameOver_AudioSource.Play();
+                gameOver_sprite.enabled = true;
                 InteractionManager.InteractionSourceReleased += OnInteractionSourceReleased;
                 break;
         }

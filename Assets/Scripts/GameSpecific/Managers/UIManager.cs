@@ -55,6 +55,8 @@ public class UIManager : Singleton<UIManager>, IKeywordCommandProvider {
         GameManger.Instance.EnemyHit += OnEnemyHit;
 
         KeywordCommandManager.Instance.AddKeywordCommandProvider(this);
+
+        ShowQuests();
     }
 
     void Update()
@@ -208,7 +210,7 @@ public class UIManager : Singleton<UIManager>, IKeywordCommandProvider {
         // TODO
     }
 
-    private void ShowQuests()
+    public void ShowQuests()
     {
         state = State.QUEST;
         mainUIPanel.Write("Quests", QuestManager.Instance.GetAcceptedQuestsProgression());
@@ -216,7 +218,7 @@ public class UIManager : Singleton<UIManager>, IKeywordCommandProvider {
         mapRadar.HideRadar();
     }
 
-    private void ShowSpells()
+    public void ShowSpells()
     {
         state = State.SPELLS;
         // TODO
@@ -228,7 +230,7 @@ public class UIManager : Singleton<UIManager>, IKeywordCommandProvider {
         mapRadar.HideRadar();
     }
 
-    private void ShowInventory()
+    public void ShowInventory()
     {
         state = State.INVENTORY;
         mainUIPanel.Write("Inventory", InventoryManager.Instance.GetCollectedItemsDescription());
@@ -236,7 +238,7 @@ public class UIManager : Singleton<UIManager>, IKeywordCommandProvider {
         mapRadar.HideRadar();
     }
 
-    private void ShowMap()
+    public void ShowMap()
     {
         state = State.MAP;
         mainUIPanel.Write("MAP");

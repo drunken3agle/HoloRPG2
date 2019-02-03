@@ -26,23 +26,17 @@ public class ScanningManager : Singleton<ScanningManager> {
     }
 
     private void ScanStateChanged() {   
-        if (SpatialUnderstanding.Instance.ScanState == SpatialUnderstanding.ScanStates.Done)
-        {
-            Debug.Log("ScanningManager: Scan complete!");
-
+        if (SpatialUnderstanding.Instance.ScanState == SpatialUnderstanding.ScanStates.Done) {
             // Disable MRTK AppState script (this.IsTheCaptainNow = true)
             AppState.GetComponent<HoloToolkit.Examples.SpatialUnderstandingFeatureOverview.AppState>().enabled = false;
-            Debug.Log("ScanningManager: Disabled MRTK AppState");
             
             // Disable all elements in ToDisable
             foreach(GameObject g in ToDisable) {
-                // Debug.Log("ScanningManager: Disabled " + g.name);
                 g.SetActive(false);
             }
 
             // Disable all elements in ToDisable
             foreach(GameObject g in ToEnable) {
-                // Debug.Log("ScanningManager: Disabled " + g.name);
                 g.SetActive(true);
             }
 
@@ -59,21 +53,16 @@ public class ScanningManager : Singleton<ScanningManager> {
     }
 
     public GameObject SpawnOnFloor(GameObject ToSpawn, float minDistance, float maxDistance, float minAngle, float maxAngle) {
-        Debug.Log("Trying to spawn " + ToSpawn.name);
-
         SpatialUnderstandingDllTopology.TopologyResult[] _resultsTopology = new SpatialUnderstandingDllTopology.TopologyResult[MaxResultCount];
-        List<SpatialUnderstandingDllTopology.TopologyResult> possibleSpawnLocations = new List<SpatialUnderstandingDllTopology.TopologyResult>();
+        List<SpatialUnderstandingDllTopology.TopologyResult> validSpawnLocations = new List<SpatialUnderstandingDllTopology.TopologyResult>();
 
         IntPtr resultsTopologyPtr = SpatialUnderstanding.Instance.UnderstandingDLL.PinObject(_resultsTopology);
-
         Vector3 dimensions = Vector3.one; //ToSpawn.GetComponent<Renderer>().bounds.size;
         
         int locationCount = SpatialUnderstandingDllTopology.QueryTopology_FindPositionsOnFloor(dimensions.x, dimensions.z, 
                                                                                                _resultsTopology.Length, resultsTopologyPtr);
 
         if(locationCount > 0) {
-            Debug.Log("Result count " + locationCount);
-
             GameObject newlySpawned = null;
             for (uint i = 0; i < locationCount; ++i) {
                 float distanceFromPlayer = Vector3.Distance(_resultsTopology[i].position, Camera.main.transform.position);
@@ -84,14 +73,16 @@ public class ScanningManager : Singleton<ScanningManager> {
                 float relativeAngle = Vector3.Angle(Camera.main.transform.forward, _resultsTopology[i].position - Camera.main.transform.position);
                 if (relativeAngle > maxAngle || relativeAngle < minAngle) { continue; } 
                 
-                possibleSpawnLocations.Add(_resultsTopology[i]);
+                // add this location to the valid spawn locations
+                validSpawnLocations.Add(_resultsTopology[i]);
             }
 
-            int randomIndex = Utils.GetRndIndex(possibleSpawnLocations.Count);
-            SpatialUnderstandingDllTopology.TopologyResult spawnLocation = possibleSpawnLocations[randomIndex];
-
+            // Pick up one location from the valid locations found
+            int randomIndex = Utils.GetRndIndex(validSpawnLocations.Count);
+            SpatialUnderstandingDllTopology.TopologyResult spawnLocation = validSpawnLocations[randomIndex];
             Debug.Log("Spawning at index " + randomIndex + " at position : " + spawnLocation.position.ToString());
-            // Suitable location found!
+            
+            // Spawn the object at the random valid location chosen
             newlySpawned = Instantiate(ToSpawn, spawnLocation.position, Quaternion.LookRotation(spawnLocation.normal, Vector3.up));
 
 
