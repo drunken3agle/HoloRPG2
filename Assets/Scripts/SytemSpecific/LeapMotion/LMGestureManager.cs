@@ -17,6 +17,7 @@ public struct HandTrackingThresholds
 public class LMGestureManager : Singleton<LMGestureManager> {
 
     public event System.Action<GestureType, HandTracking> GesturePerformed;
+    public event System.Action<bool> FistClosed;
 
   
 
@@ -103,6 +104,7 @@ public class LMGestureManager : Singleton<LMGestureManager> {
 
     private void CheckForPerformedGesture(HandTracking handTracking)
     {
+        // Check if new hand state completes a gesture performance
         foreach (HandState handState in handTracking.CurrentStates)
         {
             if (handTracking.IsStateFreshlyTracked(handState))
@@ -122,33 +124,20 @@ public class LMGestureManager : Singleton<LMGestureManager> {
                 }
             }
         }
-    }
 
+        // Check fist status
+        if ((handTracking.CurrentStates.Contains(HandState.Palm_Closed))
+            && (handTracking.IsStateFreshlyTracked(HandState.Palm_Closed)))
+        {
+            if (FistClosed != null) FistClosed.Invoke(true);
+        }
+        else if ((handTracking.CurrentStates.Contains(HandState.Fist_Not_Closed))
+            && (handTracking.IsStateFreshlyTracked(HandState.Fist_Not_Closed)))
+        {
+            if (FistClosed != null) FistClosed.Invoke(false);
+        }
+
+
+    }
 }
 
-
-// Look for hand references in the scene
-//bool foundLeftHand = false;
-//bool foundRightHand = false;
-
-//foreach (HandReference handReference in FindObjectsOfType<HandReference>())
-//{
-//    if (handReference.HandSide == HandSide.Left)
-//    {
-//        leftHandTrans = handReference.gameObject.transform;
-//        foundLeftHand = true;
-//    }
-//    else if (handReference.HandSide == HandSide.Right)
-//    {
-//        rightHandTrans = handReference.gameObject.transform;
-//        foundRightHand = true;
-//    }
-//}
-//if (foundRightHand == false)
-//{
-//    Debug.LogError("Right hand reference not found in the scene!");
-//}
-//if (foundLeftHand == false)
-//{
-//    Debug.LogError("Left hand reference not found in the scene!");
-//}

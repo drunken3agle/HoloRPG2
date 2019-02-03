@@ -20,10 +20,13 @@ public enum ScenarioState
 public class ScenarioManager : MonoBehaviour {
 
     [SerializeField] private AbstracNpc npcToSpawn;
-    [SerializeField] private AbstractEnemy enemy1;
-    [SerializeField] private AbstractEnemy enemy2;
-    [SerializeField] private AbstractEnemy enemy3;
 
+    // Enemy prefabs
+    [SerializeField] private AbstractEnemy smallRhino;
+    [SerializeField] private AbstractEnemy bigRhino;
+    [SerializeField] private AbstractEnemy devilMeelee;
+    [SerializeField] private AbstractEnemy devilProjectile;
+    [SerializeField] private AbstractEnemy dragon;
 
     [SerializeField] private float delayToSpawnNPC = 2.0f;
     [SerializeField] private float delayToSpawnFirstEnemy = 2.4f;
@@ -48,9 +51,12 @@ public class ScenarioManager : MonoBehaviour {
         OnStateUpdated(ScenarioState.Scanning);
     }
 
-   
 
-
+    /// <summary>
+    /// Callback for whenever a state is updated.
+    /// Add changes here.
+    /// </summary>
+    /// <param name="newState"> New state </param>    
     private void OnStateUpdated(ScenarioState newState)
     {
         CurrentState = newState;
@@ -65,7 +71,7 @@ public class ScenarioManager : MonoBehaviour {
 
             case ScenarioState.Quest_Accepted:
                 npcInstance.GetComponent<AbstractAnchor>().AnchorPosition += Vector3.forward * 20; 
-                StartCoroutine(SpawnEnemyCoroutine(enemy1, delayToSpawnFirstEnemy));   
+                StartCoroutine(SpawnEnemyCoroutine(smallRhino, delayToSpawnFirstEnemy));   
                 break;
 
             case ScenarioState.Quest_Finished:
@@ -109,7 +115,7 @@ public class ScenarioManager : MonoBehaviour {
     {
         if (CurrentState == ScenarioState.Quest_Accepted)
         {
-            StartCoroutine(SpawnEnemyCoroutine(enemy2, delayToSpawnEnemy));
+            StartCoroutine(SpawnEnemyCoroutine(bigRhino, delayToSpawnEnemy));
         }
     }
     
@@ -127,11 +133,6 @@ public class ScenarioManager : MonoBehaviour {
     {
         OnStateUpdated(ScenarioState.Game_Over);
     }
-
-
-
-
-
 
 
     private IEnumerator SpawnNPCCoroutine()

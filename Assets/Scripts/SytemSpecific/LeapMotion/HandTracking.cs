@@ -10,7 +10,8 @@ public enum HandState
     Palm_Closed,
     Moving_Forward,
     Moving_Right,
-    Moving_Left
+    Moving_Left,
+    Fist_Not_Closed
 }
 
 public class HandTracking {
@@ -102,6 +103,11 @@ public class HandTracking {
         {
             currentStates.Add(HandState.Palm_Closed);
         }
+        else
+        {
+            currentStates.Add(HandState.Fist_Not_Closed);
+        }
+
 
         // Is moving forward ?
         if ((VelocityIntensity > handTrackingThresholds.ForwardVelocityThreshold) 
