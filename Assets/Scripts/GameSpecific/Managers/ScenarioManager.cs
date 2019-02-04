@@ -109,13 +109,35 @@ public class ScenarioManager : MonoBehaviour {
         }
     }
 
-    
+
 
     private void OnEnemyKilled(IEnemy EnemyKilled)
     {
+        int killProgress = 0;
+
         if (CurrentState == ScenarioState.Quest_Accepted)
         {
-            StartCoroutine(SpawnEnemyCoroutine(bigRhino, delayToSpawnEnemy));
+            killProgress++;
+            switch (killProgress)
+            {
+                case 1:
+                StartCoroutine(SpawnEnemyCoroutine(bigRhino, delayToSpawnEnemy));
+                break;
+
+                case 2:
+                StartCoroutine(SpawnEnemyCoroutine(devilMeelee, delayToSpawnEnemy));
+                break;
+
+                case 3:
+                StartCoroutine(SpawnEnemyCoroutine(devilProjectile, delayToSpawnEnemy));
+                break;
+
+                case 4:
+                StartCoroutine(SpawnEnemyCoroutine(dragon, delayToSpawnEnemy));
+                break;
+
+        }
+            
         }
     }
     
