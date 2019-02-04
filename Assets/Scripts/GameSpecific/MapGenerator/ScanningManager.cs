@@ -46,12 +46,6 @@ public class ScanningManager : Singleton<ScanningManager> {
         }
     }
 
-    protected override void OnDestroy() {
-        //SpatialUnderstanding.Instance.ScanStateChanged -= ScanStateChanged;
-        
-        base.OnDestroy();
-    }
-
     public GameObject SpawnOnFloor(GameObject ToSpawn, float minDistance, float maxDistance, float minAngle, float maxAngle) {
         SpatialUnderstandingDllTopology.TopologyResult[] _resultsTopology = new SpatialUnderstandingDllTopology.TopologyResult[MaxResultCount];
         List<SpatialUnderstandingDllTopology.TopologyResult> validSpawnLocations = new List<SpatialUnderstandingDllTopology.TopologyResult>();
@@ -68,11 +62,9 @@ public class ScanningManager : Singleton<ScanningManager> {
                 float distanceFromPlayer = Vector3.Distance(_resultsTopology[i].position, Camera.main.transform.position);
                 if (distanceFromPlayer > maxDistance || distanceFromPlayer < minDistance) { continue; }
 
-                Debug.Log("Found floor patch with correct size");
-
                 float relativeAngle = Vector3.Angle(Camera.main.transform.forward, _resultsTopology[i].position - Camera.main.transform.position);
                 if (relativeAngle > maxAngle || relativeAngle < minAngle) { continue; } 
-                
+
                 // add this location to the valid spawn locations
                 validSpawnLocations.Add(_resultsTopology[i]);
             }
@@ -84,7 +76,6 @@ public class ScanningManager : Singleton<ScanningManager> {
             
             // Spawn the object at the random valid location chosen
             newlySpawned = Instantiate(ToSpawn, spawnLocation.position, Quaternion.LookRotation(spawnLocation.normal, Vector3.up));
-
 
             if (newlySpawned != null) { 
                 return newlySpawned;
