@@ -22,6 +22,7 @@ public class ScenarioManager : MonoBehaviour {
     [SerializeField] private AbstracNpc npcToSpawn;
 
     // Enemy prefabs
+    public AbstractEnemy[] enemies;
     [SerializeField] private AbstractEnemy smallRhino;
     [SerializeField] private AbstractEnemy bigRhino;
     [SerializeField] private AbstractEnemy devilMeelee;
@@ -71,7 +72,7 @@ public class ScenarioManager : MonoBehaviour {
 
             case ScenarioState.Quest_Accepted:
                 npcInstance.GetComponent<AbstractAnchor>().AnchorPosition += Vector3.forward * 20; 
-                StartCoroutine(SpawnEnemyCoroutine(smallRhino, delayToSpawnFirstEnemy));   
+                StartCoroutine(SpawnEnemyCoroutine(smallRhino, delayToSpawnFirstEnemy));
                 break;
 
             case ScenarioState.Quest_Finished:
@@ -113,26 +114,25 @@ public class ScenarioManager : MonoBehaviour {
 
     private void OnEnemyKilled(IEnemy EnemyKilled)
     {
-        int killProgress = 0;
 
         if (CurrentState == ScenarioState.Quest_Accepted)
         {
-            killProgress++;
-            switch (killProgress)
+            //make random
+            switch (UnityEngine.Random.Range(0, 4))
             {
-                case 1:
+                case 0:
                 StartCoroutine(SpawnEnemyCoroutine(bigRhino, delayToSpawnEnemy));
                 break;
 
-                case 2:
+                case 1:
                 StartCoroutine(SpawnEnemyCoroutine(devilMeelee, delayToSpawnEnemy));
                 break;
 
-                case 3:
+                case 2:
                 StartCoroutine(SpawnEnemyCoroutine(devilProjectile, delayToSpawnEnemy));
                 break;
 
-                case 4:
+                case 3:
                 StartCoroutine(SpawnEnemyCoroutine(dragon, delayToSpawnEnemy));
                 break;
 
