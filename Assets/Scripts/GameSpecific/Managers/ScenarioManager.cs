@@ -36,6 +36,8 @@ public class ScenarioManager : MonoBehaviour {
     [SerializeField] private AudioSource gameOver_AudioSource;
     [SerializeField] private Image gameOver_sprite;
 
+    private List<GameObject> spawnedEnemies = new List<GameObject>();
+
     private ScenarioState CurrentState;
 
     private GameObject npcInstance;
@@ -83,6 +85,7 @@ public class ScenarioManager : MonoBehaviour {
                 background_AudioSource.Stop();
                 gameOver_AudioSource.Play();
                 gameOver_sprite.enabled = true;
+                KillAllEnemeies();
                 InteractionManager.InteractionSourceReleased += OnInteractionSourceReleased;
                 break;
         }
@@ -174,7 +177,8 @@ public class ScenarioManager : MonoBehaviour {
         if (CurrentState == ScenarioState.Quest_Accepted)
         {
             yield return new WaitForSeconds(delay);
-            ScanningManager.Instance.SpawnOnFloor(enemyToSpawn.gameObject, 1f, 25f, 0f, 180f);
+            GameObject spawnedEnemy = ScanningManager.Instance.SpawnOnFloor(enemyToSpawn.gameObject, 1f, 25f, 0f, 180f);
+            spawnedEnemies.Add(spawnedEnemy);
         }
         yield return new WaitForEndOfFrame();
     }
@@ -193,5 +197,16 @@ public class ScenarioManager : MonoBehaviour {
     private void OnInteractionSourceReleased(InteractionSourceReleasedEventArgs obj)
     {
         SceneManager.LoadScene(0);
+    }
+
+    private void KillAllEnemeies()
+    {
+        foreach(GameObject enemy in spawnedEnemies)
+        {
+            if (enemy != null)
+            {
+                Destroy(enemy);
+            }
+        }
     }
 }

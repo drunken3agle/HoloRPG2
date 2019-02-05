@@ -68,8 +68,7 @@ public class CollisionResponse : MonoBehaviour
                 }
                 else if (other.gameObject.tag == "PlayerMeelee")
                 {
-                    // int attackDamage = other.gameObject.GetComponentInParent<IWeapon>().AD;
-                    int attackDamage = 15;
+                    int attackDamage = other.gameObject.GetComponentInParent<IWeapon>().AD;
                     GetComponentInParent<IEnemy>().GetHit(attackDamage);
                 }
                 else if (other.gameObject.tag == "EnemyProjectile")
