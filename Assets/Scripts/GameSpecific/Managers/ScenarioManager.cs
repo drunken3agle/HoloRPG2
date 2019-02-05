@@ -28,6 +28,7 @@ public class ScenarioManager : MonoBehaviour {
     [SerializeField] private AbstractEnemy devilProjectile;
     [SerializeField] private AbstractEnemy dragon;
 
+    [SerializeField] private float startGameDelay = 5;
     [SerializeField] private float delayToSpawnNPC = 2.0f;
     [SerializeField] private float delayToSpawnFirstEnemy = 2.4f;
     [SerializeField] private float delayToSpawnEnemy = 1.3f;
@@ -42,17 +43,28 @@ public class ScenarioManager : MonoBehaviour {
 
     private GameObject npcInstance;
 
+    private int killProgress = 0;
 
     private void Start()
     {
-        SpatialUnderstanding.Instance.ScanStateChanged += OnGameStarted;
+        //SpatialUnderstanding.Instance.ScanStateChanged += OnGameStarted;
         GameManger.Instance.QuestCompleted += OnQuestFinished;
         GameManger.Instance.QuestTaken += OnQuestStarted;
         GameManger.Instance.EnemyKilled += OnEnemyKilled;
         GameManger.Instance.PlayerDied += OnPlayerDied;
+
+
         OnStateUpdated(ScenarioState.Scanning);
+        StartCoroutine(StartTheGame(startGameDelay));
     }
 
+
+    private IEnumerator StartTheGame(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        OnStateUpdated(ScenarioState.Game_Started);
+
+    }
 
     /// <summary>
     /// Callback for whenever a state is updated.
@@ -67,7 +79,7 @@ public class ScenarioManager : MonoBehaviour {
         {
             case ScenarioState.Game_Started:
                 background_AudioSource.Play();
-                DecorateScene();
+                //DecorateScene();
                 StartCoroutine(SpawnNPCCoroutine());
                 break;
 
@@ -116,7 +128,7 @@ public class ScenarioManager : MonoBehaviour {
 
     private void OnEnemyKilled(IEnemy EnemyKilled)
     {
-        int killProgress = 0;
+        
 
         if (CurrentState == ScenarioState.Quest_Accepted)
         {
@@ -139,7 +151,7 @@ public class ScenarioManager : MonoBehaviour {
                 StartCoroutine(SpawnEnemyCoroutine(dragon, delayToSpawnEnemy));
                 break;
 
-        }
+            }
             
         }
     }
@@ -166,7 +178,7 @@ public class ScenarioManager : MonoBehaviour {
         {
             yield return new WaitForSeconds(delayToSpawnNPC);
 
-            npcInstance = ScanningManager.Instance.SpawnOnFloor(npcToSpawn.gameObject, 1f, 5f, 0f, 180f);
+            npcInstance = SpawnAnchor(npcToSpawn);
             OnStateUpdated(ScenarioState.NPC_Spawn);
         }
         yield return new WaitForEndOfFrame();
@@ -177,10 +189,26 @@ public class ScenarioManager : MonoBehaviour {
         if (CurrentState == ScenarioState.Quest_Accepted)
         {
             yield return new WaitForSeconds(delay);
-            GameObject spawnedEnemy = ScanningManager.Instance.SpawnOnFloor(enemyToSpawn.gameObject, 1f, 25f, 0f, 180f);
+            GameObject spawnedEnemy = SpawnAnchor(enemyToSpawn);
             spawnedEnemies.Add(spawnedEnemy);
         }
         yield return new WaitForEndOfFrame();
+    }
+
+    private GameObject SpawnAnchor(AbstractAnchor anchor)
+    {
+        Vector3 playerPosition      = CameraHelper.Stats.camPos;
+        Vector3 lookingOrientation = CameraHelper.Stats.camLookDir;
+        Vector3 groundPosition = CameraHelper.Stats.groundPos;
+
+        Vector3 finalPosition = playerPosition + lookingOrientation * 4.0f;
+        finalPosition = new Vector3(finalPosition.x, groundPosition.y, finalPosition.z);
+
+        Quaternion finalRotation = VectorUtils.LookAt2D(finalPosition, playerPosition);
+
+        GameObject spawnedAnchor = Instantiate(anchor.gameObject, finalPosition, finalRotation);
+        return spawnedAnchor;
+ 
     }
 
 

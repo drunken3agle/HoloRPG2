@@ -389,7 +389,7 @@ public class AnchorEditorUi : Singleton<AnchorEditorUi>, IKeywordCommandProvider
         CreateNewAnchorAtWorldCursorPosition("NPC");
     }
 
-    private void NewAnchor(string anchorID)
+    public void NewAnchor(string anchorID)
     {
         if (GazedAnchor != null)
         {
@@ -397,6 +397,7 @@ public class AnchorEditorUi : Singleton<AnchorEditorUi>, IKeywordCommandProvider
             AnchorManager.Instance.DeleteAnchor(GazedAnchor);
         }
     }
+
 
     public List<KeywordCommand> GetSpeechCommands()
     {
