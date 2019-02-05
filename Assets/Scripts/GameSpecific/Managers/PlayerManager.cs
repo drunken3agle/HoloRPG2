@@ -56,13 +56,16 @@ public class PlayerManager : Singleton<PlayerManager> {
 
     private void ReducePlayerLife(int byAmount)
     {
-        playerLife -= byAmount;
-        
-        if (playerLife < 0)
+        if ((playerLife > 0) && (playerLife - byAmount <= 0))
         {
             playerLife = 0;
             GameManger.Instance.InvokePlayerDied();
             Notify.Show("You have died!", 7);
+        }
+        playerLife -= byAmount;
+        if (playerLife < 0)
+        {
+            playerLife = 0;
         }
         GameManger.Instance.InvokeUpdateCanvasUI();   
     }
