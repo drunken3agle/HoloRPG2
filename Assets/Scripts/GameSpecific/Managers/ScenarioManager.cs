@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using HoloToolkit.Unity;
 using System;
+using System.Collections;
 using UnityEngine.XR.WSA.Input;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -33,6 +34,7 @@ public class ScenarioManager : MonoBehaviour {
     [SerializeField] private float delayToSpawnNPC = 2.0f;
     [SerializeField] private float delayToSpawnFirstEnemy = 2.4f;
     [SerializeField] private float delayToSpawnEnemy = 1.3f;
+    [SerializeField] private float distanceToSpawnAnchors = 6.0f;
 
     [SerializeField] private AudioSource background_AudioSource;
     [SerializeField] private AudioSource gameOver_AudioSource;
@@ -57,6 +59,8 @@ public class ScenarioManager : MonoBehaviour {
 
         OnStateUpdated(ScenarioState.Scanning);
         StartCoroutine(StartTheGame(startGameDelay));
+
+        DecorateScene();
     }
 
 
@@ -129,24 +133,26 @@ public class ScenarioManager : MonoBehaviour {
 
     private void OnEnemyKilled(IEnemy EnemyKilled)
     {
+        
         if (CurrentState == ScenarioState.Quest_Accepted)
         {
+            killProgress++;
             //make random
-            switch (UnityEngine.Random.Range(0, 4))
+            switch (killProgress)
             {
-                case 0:
+                case 1:
                 StartCoroutine(SpawnEnemyCoroutine(bigRhino, delayToSpawnEnemy));
                 break;
 
-                case 1:
+                case 2:
                 StartCoroutine(SpawnEnemyCoroutine(devilMeelee, delayToSpawnEnemy));
                 break;
 
-                case 2:
+                case 3:
                 StartCoroutine(SpawnEnemyCoroutine(devilProjectile, delayToSpawnEnemy));
                 break;
 
-                case 3:
+                case 4:
                 StartCoroutine(SpawnEnemyCoroutine(dragon, delayToSpawnEnemy));
                 break;
 
@@ -196,14 +202,15 @@ public class ScenarioManager : MonoBehaviour {
 
     private GameObject SpawnAnchor(AbstractAnchor anchor)
     {
-        Vector3 playerPosition      = CameraHelper.Stats.camPos;
+        Vector3 playerPosition = CameraHelper.Stats.camPos;
         Vector3 lookingOrientation = CameraHelper.Stats.camLookDir;
         Vector3 groundPosition = CameraHelper.Stats.groundPos;
 
-        Vector3 finalPosition = playerPosition + lookingOrientation * 4.0f;
+        Vector3 finalPosition = playerPosition + lookingOrientation * distanceToSpawnAnchors;
         finalPosition = new Vector3(finalPosition.x, groundPosition.y, finalPosition.z);
 
         Quaternion finalRotation = VectorUtils.LookAt2D(finalPosition, playerPosition);
+
 
         GameObject spawnedAnchor = Instantiate(anchor.gameObject, finalPosition, finalRotation);
         return spawnedAnchor;
@@ -211,13 +218,25 @@ public class ScenarioManager : MonoBehaviour {
     }
 
 
+
     private void DecorateScene()
     {
-        for (int i = 0; i < 7; i ++)
+        Vector3 playerPosition = CameraHelper.Stats.camPos;
+        Vector3 groundPosition = CameraHelper.Stats.groundPos;
+
+
+        for (int i = 0; i < 10; i ++)
         {
             GameObject[] objectPool = RegionManager.Instance.regionDecorations[0].smallDecorationItems;
             GameObject objectToSpawn = objectPool[Utils.GetRndIndex(objectPool.Length)];
-            ScanningManager.Instance.SpawnOnFloor(objectToSpawn, 1f, 25f, 0f, 360);
+
+            Vector3 randomOrientation = new Vector3(UnityEngine.Random.Range(-1.0f, 1.0f), 0.0f, UnityEngine.Random.Range(-1.0f, 1.0f));
+            Vector3 finalPosition = playerPosition + randomOrientation * UnityEngine.Random.Range(3.0f, 9.0f);
+            finalPosition = new Vector3(finalPosition.x, groundPosition.y, finalPosition.z);
+
+            Quaternion finalRotation = Quaternion.Euler(new Vector3(0.0f, UnityEngine.Random.Range(0.0f, 360.0f), 0.0f));
+
+            GameObject spawnedAnchor = Instantiate(objectToSpawn, finalPosition, finalRotation);
         }
     }
 
